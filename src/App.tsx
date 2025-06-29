@@ -1,5 +1,5 @@
 import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import styled from 'styled-components';
 import Navigation from './components/Navigation';
 import Dashboard from './pages/Dashboard';
@@ -17,6 +17,14 @@ const MainContent = styled.main`
   min-height: calc(100vh - 80px);
 `;
 
+// Temporary test component
+const TestDashboard = () => (
+  <div style={{ padding: '20px', textAlign: 'center' }}>
+    <h1>Test Dashboard</h1>
+    <p>If you can see this, the routing is working!</p>
+  </div>
+);
+
 function App() {
   return (
     <Router>
@@ -24,9 +32,10 @@ function App() {
         <Navigation />
         <MainContent>
           <Routes>
-            <Route path="/" element={<Dashboard />} />
+            <Route path="/" element={<TestDashboard />} />
             <Route path="/map" element={<ClinicMap />} />
             <Route path="/faq" element={<FAQ />} />
+            <Route path="*" element={<TestDashboard />} />
           </Routes>
         </MainContent>
       </AppContainer>
