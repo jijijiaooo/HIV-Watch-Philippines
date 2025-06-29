@@ -211,7 +211,7 @@ const FAQ: React.FC = () => {
           <div style={{ display: 'flex', justifyContent: 'center', gap: '2rem', flexWrap: 'wrap' }}>
             <div>
               <strong>Emergency Hotline:</strong><br />
-              +63 2 8XXX XXXX
+              +63 2 925 9111
             </div>
             <div>
               <strong>Email Support:</strong><br />
