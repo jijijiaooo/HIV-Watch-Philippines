@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/HIV-watch/static/css/main.388c6d5c.css",
-    "main.js": "/HIV-watch/static/js/main.a7a0e2a4.js",
+    "main.js": "/HIV-watch/static/js/main.cda2ba38.js",
     "index.html": "/HIV-watch/index.html",
     "main.388c6d5c.css.map": "/HIV-watch/static/css/main.388c6d5c.css.map",
-    "main.a7a0e2a4.js.map": "/HIV-watch/static/js/main.a7a0e2a4.js.map"
+    "main.cda2ba38.js.map": "/HIV-watch/static/js/main.cda2ba38.js.map"
   },
   "entrypoints": [
     "static/css/main.388c6d5c.css",
-    "static/js/main.a7a0e2a4.js"
+    "static/js/main.cda2ba38.js"
   ]
 }
