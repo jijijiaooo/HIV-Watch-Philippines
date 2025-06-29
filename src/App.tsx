@@ -17,14 +17,6 @@ const MainContent = styled.main`
   min-height: calc(100vh - 80px);
 `;
 
-// Temporary test component
-const TestDashboard = () => (
-  <div style={{ padding: '20px', textAlign: 'center' }}>
-    <h1>Test Dashboard</h1>
-    <p>If you can see this, the routing is working!</p>
-  </div>
-);
-
 function App() {
   return (
     <Router>
@@ -32,10 +24,10 @@ function App() {
         <Navigation />
         <MainContent>
           <Routes>
-            <Route path="/" element={<TestDashboard />} />
+            <Route path="/" element={<Dashboard />} />
             <Route path="/map" element={<ClinicMap />} />
             <Route path="/faq" element={<FAQ />} />
-            <Route path="*" element={<TestDashboard />} />
+            <Route path="*" element={<Dashboard />} />
           </Routes>
         </MainContent>
       </AppContainer>
