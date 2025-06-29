@@ -80,8 +80,6 @@ This project is configured for deployment on GitHub Pages. To deploy:
 npm run deploy
 ```
 
-The app will be available at: `https://jiaoshihlo.github.io/HIV-watch`
-
 ## Project Structure
 
 ```
