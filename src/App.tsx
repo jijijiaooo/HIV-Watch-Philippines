@@ -1,37 +1,19 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
-import styled from 'styled-components';
-import Navigation from './components/Navigation';
-import Dashboard from './pages/Dashboard';
-import ClinicMap from './pages/ClinicMap';
-import FAQ from './pages/FAQ';
 import './App.css';
-
-const AppContainer = styled.div`
-  min-height: 100vh;
-  background-color: #f5f5f5;
-`;
-
-const MainContent = styled.main`
-  padding-top: 80px;
-  min-height: calc(100vh - 80px);
-`;
 
 function App() {
   return (
-    <Router>
-      <AppContainer>
-        <Navigation />
-        <MainContent>
-          <Routes>
-            <Route path="/" element={<Dashboard />} />
-            <Route path="/map" element={<ClinicMap />} />
-            <Route path="/faq" element={<FAQ />} />
-            <Route path="*" element={<Dashboard />} />
-          </Routes>
-        </MainContent>
-      </AppContainer>
-    </Router>
+    <div style={{ padding: '20px', textAlign: 'center' }}>
+      <h1>HIV Watch Philippines</h1>
+      <p>If you can see this, the basic app is loading!</p>
+      <div style={{ background: '#f0f0f0', padding: '20px', margin: '20px', borderRadius: '8px' }}>
+        <h2>Test Content</h2>
+        <p>This is a test to see if the app renders properly.</p>
+        <button style={{ padding: '10px 20px', background: '#007bff', color: 'white', border: 'none', borderRadius: '4px' }}>
+          Test Button
+        </button>
+      </div>
+    </div>
   );
 }
 
