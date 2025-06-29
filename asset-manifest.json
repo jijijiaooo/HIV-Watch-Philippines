@@ -1,13 +1,13 @@
 {
   "files": {
     "main.css": "/HIV-Watch-Philippines/static/css/main.388c6d5c.css",
-    "main.js": "/HIV-Watch-Philippines/static/js/main.cda2ba38.js",
+    "main.js": "/HIV-Watch-Philippines/static/js/main.b85e591a.js",
     "index.html": "/HIV-Watch-Philippines/index.html",
     "main.388c6d5c.css.map": "/HIV-Watch-Philippines/static/css/main.388c6d5c.css.map",
-    "main.cda2ba38.js.map": "/HIV-Watch-Philippines/static/js/main.cda2ba38.js.map"
+    "main.b85e591a.js.map": "/HIV-Watch-Philippines/static/js/main.b85e591a.js.map"
   },
   "entrypoints": [
     "static/css/main.388c6d5c.css",
-    "static/js/main.cda2ba38.js"
+    "static/js/main.b85e591a.js"
   ]
 }
