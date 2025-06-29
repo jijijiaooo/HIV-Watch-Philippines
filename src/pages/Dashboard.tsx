@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
-import axios from 'axios';
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 
 const DashboardContainer = styled.div`
   padding: 2rem 0;
@@ -109,15 +108,7 @@ const NewsExcerpt = styled.p`
   line-height: 1.5;
 `;
 
-// API endpoints for real data sources
-const API_ENDPOINTS = {
-  doh: 'https://doh.gov.ph/api/hiv-data',
-  who: 'https://ghoapi.azureedge.net/api/Indicator?$filter=IndicatorName eq "HIV" and SpatialDim eq "PHL"',
-  unaids: 'https://www.unaids.org/en/api/data',
-  // Fallback to sample data if APIs are not available
-};
-
-// Sample data - fallback when APIs are unavailable
+// Sample data - demonstration purposes
 const sampleHivData = [
   { year: '2018', cases: 12500, deaths: 1200 },
   { year: '2019', cases: 13800, deaths: 1350 },
@@ -128,12 +119,12 @@ const sampleHivData = [
 ];
 
 const sampleRegionalData = [
-  { region: 'NCR', cases: 8500, percentage: 42 },
-  { region: 'CALABARZON', cases: 3200, percentage: 16 },
-  { region: 'Central Luzon', cases: 2800, percentage: 14 },
-  { region: 'Western Visayas', cases: 2200, percentage: 11 },
-  { region: 'Central Visayas', cases: 2000, percentage: 10 },
-  { region: 'Others', cases: 1600, percentage: 8 },
+  { region: 'NCR', cases: 8500, percentage: 42, color: '#667eea' },
+  { region: 'CALABARZON', cases: 3200, percentage: 16, color: '#764ba2' },
+  { region: 'Central Luzon', cases: 2800, percentage: 14, color: '#f093fb' },
+  { region: 'Western Visayas', cases: 2200, percentage: 11, color: '#f5576c' },
+  { region: 'Central Visayas', cases: 2000, percentage: 10, color: '#4facfe' },
+  { region: 'Others', cases: 1600, percentage: 8, color: '#00f2fe' },
 ];
 
 const newsData = [
@@ -188,215 +179,88 @@ const newsData = [
 ];
 
 const Dashboard: React.FC = () => {
-  const [hivData, setHivData] = useState(sampleHivData);
-  const [regionalData, setRegionalData] = useState(sampleRegionalData);
-  const [totalCases, setTotalCases] = useState(20300);
-  const [totalDeaths, setTotalDeaths] = useState(1950);
-  const [newCases, setNewCases] = useState(1800);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [dataSource, setDataSource] = useState('Sample Data');
-
-  // Fetch real HIV data from official sources
-  const fetchHivData = async () => {
-    setLoading(true);
-    setError(null);
-    
-    try {
-      // Try to fetch from DOH API first
-      try {
-        const dohResponse = await axios.get(API_ENDPOINTS.doh, {
-          timeout: 5000,
-          headers: {
-            'Accept': 'application/json',
-          }
-        });
-        
-        if (dohResponse.data && dohResponse.data.length > 0) {
-          setHivData(dohResponse.data);
-          setDataSource('Department of Health (DOH) Philippines');
-          setLoading(false);
-          return;
-        }
-      } catch (dohError) {
-        console.log('DOH API not available, trying WHO...');
-      }
-
-      // Try WHO Global Health Observatory API
-      try {
-        const whoResponse = await axios.get(API_ENDPOINTS.who, {
-          timeout: 5000,
-          headers: {
-            'Accept': 'application/json',
-          }
-        });
-        
-        if (whoResponse.data && whoResponse.data.value && whoResponse.data.value.length > 0) {
-          const whoData = whoResponse.data.value.map((item: any) => ({
-            year: item.TimeDim,
-            cases: item.NumericValue,
-            deaths: item.NumericValue * 0.1 // Estimate deaths as 10% of cases
-          }));
-          setHivData(whoData);
-          setDataSource('World Health Organization (WHO)');
-          setLoading(false);
-          return;
-        }
-      } catch (whoError) {
-        console.log('WHO API not available, using sample data...');
-      }
-
-      // If all APIs fail, use sample data
-      setHivData(sampleHivData);
-      setRegionalData(sampleRegionalData);
-      setDataSource('Sample Data (Official APIs Unavailable)');
-      setError('Unable to fetch real-time data. Displaying sample data for demonstration purposes.');
-      
-    } catch (error) {
-      console.error('Error fetching HIV data:', error);
-      setError('Failed to load data. Using sample data.');
-      setDataSource('Sample Data (Error Loading)');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Calculate totals from fetched data
-  useEffect(() => {
-    if (hivData.length > 0) {
-      const latestYear = hivData[hivData.length - 1];
-      const previousYear = hivData[hivData.length - 2];
-      
-      setTotalCases(latestYear.cases);
-      setTotalDeaths(latestYear.deaths);
-      setNewCases(latestYear.cases - (previousYear?.cases || 0));
-    }
-  }, [hivData]);
-
-  // Fetch data on component mount
-  useEffect(() => {
-    fetchHivData();
-  }, []);
-
-  // Data source indicator component
-  const DataSourceIndicator = styled.div`
-    background: #f8f9fa;
-    border: 1px solid #dee2e6;
-    border-radius: 8px;
-    padding: 1rem;
-    margin-bottom: 2rem;
-    font-size: 0.9rem;
-    color: #6c757d;
-    
-    .source {
-      font-weight: bold;
-      color: #495057;
-    }
-    
-    .refresh-btn {
-      background: #007bff;
-      color: white;
-      border: none;
-      padding: 0.5rem 1rem;
-      border-radius: 4px;
-      cursor: pointer;
-      margin-left: 1rem;
-      font-size: 0.8rem;
-      
-      &:hover {
-        background: #0056b3;
-      }
-    }
-  `;
+  const [hivData] = useState(sampleHivData);
+  const [regionalData] = useState(sampleRegionalData);
+  const [totalCases] = useState(20300);
+  const [totalDeaths] = useState(1950);
+  const [newCases] = useState(1800);
 
   return (
     <DashboardContainer>
       <div className="container">
         <h1 className="section-title">HIV Statistics Dashboard</h1>
         
-        <DataSourceIndicator>
-          <div>
-            <span className="source">Data Source:</span> {dataSource}
-            {error && <div style={{ color: '#dc3545', marginTop: '0.5rem' }}>{error}</div>}
-          </div>
-          <button className="refresh-btn" onClick={fetchHivData} disabled={loading}>
-            {loading ? 'Loading...' : 'Refresh Data'}
-          </button>
-        </DataSourceIndicator>
-        
-        {loading ? (
-          <div style={{ textAlign: 'center', padding: '2rem' }}>
-            <div>Loading real-time HIV data...</div>
-          </div>
-        ) : (
-          <>
-            <StatsGrid>
-              <StatCard>
-                <StatNumber>{totalCases.toLocaleString()}</StatNumber>
-                <StatLabel>Total HIV Cases (2023)</StatLabel>
-              </StatCard>
-              <StatCard>
-                <StatNumber>{newCases.toLocaleString()}</StatNumber>
-                <StatLabel>New Cases This Year</StatLabel>
-              </StatCard>
-              <StatCard>
-                <StatNumber>{totalDeaths.toLocaleString()}</StatNumber>
-                <StatLabel>Total Deaths (2023)</StatLabel>
-              </StatCard>
-              <StatCard>
-                <StatNumber>{(totalCases / 110000000 * 100).toFixed(2)}%</StatNumber>
-                <StatLabel>Prevalence Rate</StatLabel>
-              </StatCard>
-            </StatsGrid>
+        <StatsGrid>
+          <StatCard>
+            <StatNumber>{totalCases.toLocaleString()}</StatNumber>
+            <StatLabel>Total HIV Cases (2023)</StatLabel>
+          </StatCard>
+          <StatCard>
+            <StatNumber>{newCases.toLocaleString()}</StatNumber>
+            <StatLabel>New Cases This Year</StatLabel>
+          </StatCard>
+          <StatCard>
+            <StatNumber>{totalDeaths.toLocaleString()}</StatNumber>
+            <StatLabel>Total Deaths (2023)</StatLabel>
+          </StatCard>
+          <StatCard>
+            <StatNumber>{(totalCases / 110000000 * 100).toFixed(2)}%</StatNumber>
+            <StatLabel>Prevalence Rate</StatLabel>
+          </StatCard>
+        </StatsGrid>
 
-            <ChartContainer>
-              <ChartTitle>HIV Cases Trend (2018-2023)</ChartTitle>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={hivData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="year" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="cases" 
-                    stroke="#667eea" 
-                    strokeWidth={3}
-                    name="Total Cases"
-                  />
-                  <Line 
-                    type="monotone" 
-                    dataKey="deaths" 
-                    stroke="#e74c3c" 
-                    strokeWidth={3}
-                    name="Deaths"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </ChartContainer>
+        <ChartContainer>
+          <ChartTitle>HIV Cases Trend (2018-2023)</ChartTitle>
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={hivData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="year" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line 
+                type="monotone" 
+                dataKey="cases" 
+                stroke="#667eea" 
+                strokeWidth={3}
+                name="Total Cases"
+              />
+              <Line 
+                type="monotone" 
+                dataKey="deaths" 
+                stroke="#e74c3c" 
+                strokeWidth={3}
+                name="Deaths"
+              />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartContainer>
 
-            <ChartContainer>
-              <ChartTitle>Regional Distribution of HIV Cases</ChartTitle>
-              <ResponsiveContainer width="100%" height={400}>
-                <LineChart data={regionalData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="region" />
-                  <YAxis />
-                  <Tooltip />
-                  <Legend />
-                  <Line 
-                    type="monotone" 
-                    dataKey="cases" 
-                    stroke="#27ae60" 
-                    strokeWidth={3}
-                    name="Cases by Region"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </ChartContainer>
-          </>
-        )}
+        <ChartContainer>
+          <ChartTitle>Regional Distribution of HIV Cases</ChartTitle>
+          <ResponsiveContainer width="100%" height={400}>
+            <PieChart>
+              <Pie
+                data={regionalData}
+                cx="50%"
+                cy="50%"
+                innerRadius={60}
+                outerRadius={120}
+                paddingAngle={5}
+                dataKey="cases"
+                nameKey="region"
+                label={({ region, percentage }) => `${region}: ${percentage}%`}
+                labelLine={false}
+              >
+                {regionalData.map((entry, index) => (
+                  <Cell key={`cell-${index}`} fill={entry.color} />
+                ))}
+              </Pie>
+              <Tooltip formatter={(value, name) => [value.toLocaleString(), name]} />
+              <Legend />
+            </PieChart>
+          </ResponsiveContainer>
+        </ChartContainer>
 
         <div className="card">
           <h3>Key Insights from Local News Sources</h3>
